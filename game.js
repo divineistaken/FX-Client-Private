@@ -3555,7 +3555,8 @@ function c4() {
 			.di(), aR.di(), aO.di(), aQ.di(), aM.di(), aY.di(), aG.di(), aH.di(), gC(), ae.di(), ag.di(), b5.di(), b6.di(), b2.di(), b8.di(), b9.di(), this.a1R.di(), bi.a5o(), aI.nO(), 0 === ah.n4[aE.et] && aY.show(!1, !0), ag.mq(!0), aw.di(), bi
 				.dq = !0, this.hI || this.ko && this.hX || a1.a2.setState(1), this.a5g = 0
 		}, this.a2X = function(eW) {
-			bC.qM.a5t.length ? this.a5h = bC.qM.a5t : this.a5h = bC.a5u.a0a(), b1.z.a5v(), bt.clear(), this.a18 = 0, bi.a5w(), a1.a2.setState(0), ab.setState(0), bX.eO.show(eW), 2 === this.a5g ? u.z.a5x(0) : 1 === this.a5g ? u.v(19) : u.v(5, 5)
+			bC.qM.a5t.length ? this.a5h = bC.qM.a5t : (this.a5h = bC.a5u.a0a(), __fx.replayHistory.save(this.a5h)), b1.z.a5v(), bt.clear(), this.a18 = 0, bi.a5w(), a1.a2.setState(0), ab.setState(0), bX.eO.show(eW), 2 === this.a5g ? u.z.a5x(0) : 1 ===
+				this.a5g ? u.v(19) : u.v(5, 5)
 		}, this.a5y = function() {
 			return this.hI ? aN.hJ || !bF.a5z : this.ko && (aN.hJ || this.hX)
 		}, this.a60 = function() {
@@ -4691,15 +4692,25 @@ function cP() {
 			aBH.fillStyle = bE.o1,
 			aBH.fillRect(0, aBM, aBB, a96 - aBM);
 		if (__fx.leaderboardFilter.enabled) updateFilteredLb();
+		if (__fx.leaderboardFilter.showingRivals && leaderboardHasChanged) {
+			__fx.leaderboardFilter.computeRivals();
+			leaderboardHasChanged = false;
+		}
 		var playerPos = (__fx.leaderboardFilter.enabled ?
 			this.playerPos :
 			kF[aE.et]
 		);
 		if (__fx.leaderboardFilter.hoveringOverTabs) aBW = -1;
 		if (__fx.leaderboardFilter.enabled && aBW >= __fx.leaderboardFilter.filteredLeaderboard.length) aBW = -1;
-		playerPos >= position && aBi(playerPos - position, bE.oU),
-			0 !== kF[aE.et] && 0 === position && aBi(0, bE.p4),
-			-1 !== aBW && aBi(aBW, bE.o6),
+		(__fx.leaderboardFilter.showingRivals ?
+			(function() {
+				var ownClanIndex = __fx.leaderboardFilter.getOwnClanIndex();
+				if (ownClanIndex >= 0 && ownClanIndex >= position) aBi(ownClanIndex - position, bE.oU);
+			})() :
+			(playerPos >= position && aBi(playerPos - position, bE.oU),
+				0 !== kF[aE.et] && 0 === position && aBi(0, bE.p4))
+		),
+		-1 !== aBW && aBi(aBW, bE.o6),
 			aBH.fillStyle = bE.o1,
 			//console.log("drawing", aBW),
 			aBH.clearRect(0, a96 - __fx.leaderboardFilter.tabBarOffset, aBB, __fx.leaderboardFilter.tabBarOffset);
@@ -4714,8 +4725,36 @@ function cP() {
 			aBH.fillRect(0, a96 - bf.a06, aBB, bf.a06), aBH.font = aBC, bD.r2.textBaseline(aBH, 1), bD.r2.textAlign(aBH, 1), aBH.fillText(aBe, Math.floor((aBB + aBM - 22) / 2), Math.floor(aBK + aBD / 2));
 		__fx.playerList.drawButton(aBH, 12, 12, aBM - 22);
 		var fS, gi = playerPos < position + aBF - 1 ? 1 : 2;
+		if (__fx.leaderboardFilter.showingRivals) gi = 1;
 
-		if (__fx.leaderboardFilter.enabled) {
+		if (__fx.leaderboardFilter.showingRivals) {
+			var rivalsRestore = [];
+			try {
+				for (var rivalsRow = 0; rivalsRow < aBF; rivalsRow++) {
+					var rivalsEntry = __fx.leaderboardFilter.rivalsData[rivalsRow + position];
+					if (rivalsEntry === undefined) break;
+					var repId = rivalsEntry.representativeId;
+					rivalsRestore.push([repId, ah.gx[repId], ah.zb[repId]]);
+					ah.gx[repId] = rivalsEntry.territory;
+					ah.zb[repId] = "[" + rivalsEntry.clan + "]";
+				}
+				for (aBH.font = aBE, bD.r2.textAlign(aBH, 0), fS = aBF - gi; 0 <= fS; fS--) {
+					const rivalsEntryLeft = __fx.leaderboardFilter.rivalsData[fS + position];
+					if (rivalsEntryLeft !== undefined)
+						aBj(rivalsEntryLeft.representativeId), aBk(fS, fS + position, rivalsEntryLeft.representativeId);
+				}
+				for (bD.r2.textAlign(aBH, 2), fS = aBF - gi; 0 <= fS; fS--) {
+					const rivalsEntryRight = __fx.leaderboardFilter.rivalsData[fS + position];
+					if (rivalsEntryRight !== undefined)
+						aBj(rivalsEntryRight.representativeId), aBl(fS, rivalsEntryRight.representativeId);
+				}
+			} finally {
+				rivalsRestore.forEach(function(entry) {
+					ah.gx[entry[0]] = entry[1];
+					ah.zb[entry[0]] = entry[2];
+				});
+			}
+		} else if (__fx.leaderboardFilter.enabled) {
 			let result = __fx.leaderboardFilter.filteredLeaderboard;
 			if (position !== 0 && position >= result.length - aBF)
 				position = (result.length > aBF ? result.length : aBF) - aBF;
@@ -4735,9 +4774,9 @@ function cP() {
 				aBj(m5[fS + position]), aBk(fS, fS + position, m5[fS + position]);
 			for (bD.r2.textAlign(aBH, 2), fS = aBF - gi; 0 <= fS; fS--)
 				aBj(m5[fS + position]), aBl(fS, m5[fS + position]);
-		}
-		2 == gi && (aBj(aE.et), bD.r2.textAlign(aBH, 0), aBk(aBF - 1, kF[aE.et], aE.et), bD.r2.textAlign(aBH, 2), aBl(aBF - 1, aE.et)), 0 === position && (gi = .7 * aBN / ac.get(4).height, aBH.setTransform(gi, 0, 0, gi, Math.floor(aBO + .58 * aBN +
-			.5 * gi * ac.get(4).width), Math.floor(aBK + aBD + .4 * aBN)), aBH.imageSmoothingEnabled = !0, aBH.drawImage(ac.get(4), -Math.floor(ac.get(4).width / 2), -Math.floor(ac.get(4).height / 2)), aBH.setTransform(1, 0, 0, 1, 0, 0))
+		}!__fx.leaderboardFilter.showingRivals && 2 == gi && (aBj(aE.et), bD.r2.textAlign(aBH, 0), aBk(aBF - 1, kF[aE.et], aE.et), bD.r2.textAlign(aBH, 2), aBl(aBF - 1, aE.et)), 0 === position && (gi = .7 * aBN / ac.get(4).height, aBH.setTransform(
+			gi, 0, 0, gi, Math.floor(aBO + .58 * aBN + .5 * gi * ac.get(4).width), Math.floor(aBK + aBD + .4 * aBN)), aBH.imageSmoothingEnabled = !0, aBH.drawImage(ac.get(4), -Math.floor(ac.get(4).width / 2), -Math.floor(ac.get(4).height /
+			2)), aBH.setTransform(1, 0, 0, 1, 0, 0))
 	}
 
 	function aBj(player) {
@@ -4841,8 +4880,10 @@ function cP() {
 		aBY = !1;
 		var aBy = aBz(fI);
 		var isEmptySpace = false;
-		return bM.a3J() && -1 !== aBW && (aBW = -1, aBg(), bi.dq = !0), bi.eX - aBX < 350 && aBa === aBy && -1 !== (aBy = (aBy = a9s(-1, aBy, aBF)) !== aBF && a05(fG, fI) ? aBy : -1) && (fG = (__fx.leaderboardFilter.enabled ? (updateFilteredLb(),
-				m5[__fx.leaderboardFilter.filteredLeaderboard[aBy + position] ?? (isEmptySpace = true, kF[aE.et])]) : m5[aBy + position]), aBy === aBF - 1 && (__fx.leaderboardFilter.enabled ? this.playerPos : kF[aE.et]) >=
+		return bM.a3J() && -1 !== aBW && (aBW = -1, aBg(), bi.dq = !0), bi.eX - aBX < 350 && aBa === aBy && -1 !== (aBy = (aBy = a9s(-1, aBy, aBF)) !== aBF && a05(fG, fI) ? aBy : -1) && (fG = (__fx.leaderboardFilter.showingRivals ?
+				(isEmptySpace = __fx.leaderboardFilter.rivalsData[aBy + position] === undefined, __fx.leaderboardFilter.rivalsData[aBy + position]?.representativeId ?? aE.et) :
+				__fx.leaderboardFilter.enabled ? (updateFilteredLb(), m5[__fx.leaderboardFilter.filteredLeaderboard[aBy + position] ?? (isEmptySpace = true, kF[aE.et])]) : m5[aBy + position]),
+			aBy === aBF - 1 && !__fx.leaderboardFilter.showingRivals && (__fx.leaderboardFilter.enabled ? this.playerPos : kF[aE.et]) >=
 			position + aBF - 1 && (fG = aE.et), !isEmptySpace && aE.i3 && __fx.settings.openDonationHistoryFromLb && __fx.donationsTracker.displayHistory(fG, ah.a1o, aE.ko), 0 === ah.n4[fG] || isEmptySpace || aE.hX && !aE.ko && !aE.hI || aI
 			.nQ(fG, 800, !1, 0)), !0
 	}, this.a2j = function(fG, fI, deltaY) {
