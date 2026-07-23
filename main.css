@@ -261,6 +261,63 @@ label.checkbox .checkmark:after {
 }
 
 
+#replayTimebar {
+	position        : fixed;
+	background-color: rgba(0, 0, 0, 0.7);
+	width           : 60%;
+	bottom          : calc(5vw + 12px);
+	color           : white;
+	font-family     : 'Trebuchet MS', 'Franklin Gothic Medium', Arial, sans-serif;
+	margin          : auto;
+	right           : 0;
+	left            : 0;
+	padding         : 8px 15px;
+	box-sizing      : border-box;
+	border-color    : white;
+	border-style    : solid;
+	border-width    : 2px;
+	border-width    : calc(0.15 * (1vw + 1vh));
+	font-size       : 20px;
+	font-size       : calc(9px + ((0.5 * (1.1vw - 0.1vh)) + 0.14rem));
+	align-items     : center;
+	gap             : 10px;
+	user-select     : none;
+	transition      : 0.2s;
+	z-index         : 9;
+}
+
+#replayTimebar .replay-time { min-width: 2.8em; text-align: center; white-space: nowrap; }
+
+#replayTimebar .replay-track {
+	position: relative; flex: 1; height: 14px; cursor: pointer; touch-action: none;
+	background-color: rgb(255 255 255 / 70%);
+}
+#replayTimebar .replay-track:hover { background-color: #ccc; }
+
+#replayTimebar .replay-fill {
+	position: absolute; top: 0; bottom: 0; left: 0; width: 0%;
+	background-color: rgba(0, 255, 0, 0.5); pointer-events: none;
+}
+
+#replayTimebar .replay-fill::after {
+	content: ""; position: absolute; right: 0; top: 50%; width: 12px; height: 22px;
+	transform: translate(50%, -50%);
+	background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.7);
+}
+#replayTimebar.seeking .replay-fill::after { animation: seekAnimation 0.8s ease-in-out infinite; }
+
+#replayTimebar .replay-target {
+	position: absolute; top: -4px; bottom: -4px; left: 0%; width: 3px;
+	transform: translateX(-50%); background-color: #dc143c; pointer-events: none;
+}
+
+@keyframes seekAnimation {
+	50% {
+		opacity: 0.4;
+	}
+}
+/* who likes css :sob:
+
 /* Custom Map Button */
 ::-webkit-file-upload-button {
 	color           : white;

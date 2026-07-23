@@ -4454,6 +4454,13 @@ function d5() {
 		return a9l[a9m]
 	}, this.zD = function() {
 		return a9i.fI
+	}, __fx.replay.controls = {
+		fxIsPlaying: () => this.a5z,
+		fxGetSpeedIndex: () => a9m,
+		fxSetSpeedIndex: index => {
+			a9m = index, this.resize()
+		},
+		fxGetPanelTop: () => a9i && a9i.fI
 	}, this.a7T = function(a9c) {
 		return !!aE.hI && a9i.fG + a9i.j > i.j - a9c - bf.gap
 	}, this.resize = function() {
@@ -4479,7 +4486,7 @@ function d5() {
 			this.a3I(!1)
 		}
 		return !0
-	}, this.a3I = function(a9q) {
+	}, __fx.replay.togglePlayPause = () => this.a3I(!0), this.a3I = function(a9q) {
 		2 === aE.a18 ? (this.a3G(!1), u.v(3)) : (a9k = !1, this.a5z = !this.a5z, this.a5z ? (aN.hJ && aN.a3H(), a1.a2.setState(1)) : a9q || aN.a6x(), bi.dq = !0, mr(this))
 	}, this.a9r = function() {
 		this.a5z = !1, aN.a6x(), bi.dq = !0, mr(this)
@@ -11041,7 +11048,7 @@ function d4() {
 		aE.hI || this.qM.di()
 	}, this.ec = function() {
 		aE.hI || (this.qM.ec(), 3 !== u.tK) || bi.kR() % 15 != 5 && 2 !== aE.a18 || u.a2O().aTl()
-	}, this.aTo = function() {
+	}, __fx.replay.restartReplay = () => this.aTo(), this.aTo = function() {
 		var aWs = 0 !== aE.a18,
 			aWt = aE.a5g;
 		aWs || ab.aHY(), aE.a5e.a63(), aE.data.canvas = null, b1.z.close(b1.z.a2S, 3257), b1.z.a2S = 0, aE.data.isReplay = 1, aE.a5i(), aWs && (aE.a5g = aWt)
@@ -11050,6 +11057,8 @@ function d4() {
 		return 0 <= aC ? qj.substring(aC + 1) : qj
 	}, this.aTm = function(qj) {
 		return qj
+	}, __fx.replayHistory.load = saved => {
+		saved = bC.aTn(saved), bC.aKI.xP(saved) && bC.aTo()
 	}
 }
 
@@ -12739,23 +12748,32 @@ function ad3() {
 				for (f9 = ad5 + adG, aC = ad5; aC < f9; aC++) bB.pQ.qB(adE[aC], fs[aC], fu[aC], fw[aC]);
 				ad5 += adG, ad4++
 			} else ++ad6 >= adG && (ad4++, ad6 = 0);
-			return 1
+			return __fx.replay.tick++, 1
 		}
 		aO.a2T("Replay file smaller than expected."), bF.a3I(!1), aE.a18 = 2
 	}
 	this.acv = 0, this.di = function() {
-		ad7 = aHq = ad6 = ad5 = ad4 = 0
+		ad7 = aHq = ad6 = ad5 = ad4 = 0, __fx.replay.registerHooks({
+			advance: () => adA(),
+			finishTick: () => be.aD9(),
+			requestRedraw: () => {
+				bi.dq = !0
+			},
+			isEnded: () => 2 === aE.a18,
+			getTickInterval: () => bi.aCZ
+		})
 	}, this.ec = function() {
 		var aaq;
-		i.ec(), bF.a9n() < 1.7 ? 0 === eG ? bi.eX >= eX && (aaq = bi.aCZ / bF.a9n(), eX += aaq * Math.floor(1 + (bi.eX - eX) / aaq), 2 === aE.a18 || aN.hJ || !bF.a5z ? mg() : (adA(), be.aD9()), eG++) : adB() : function() {
-			var aaq;
-			if (bi.eX >= eX)
-				if (2 === aE.a18 || aN.hJ || !bF.a5z) mg(), eX = bi.eX;
-				else {
-					for (aaq = bi.aCZ / bF.a9n(), 16 < (bi.eX - eX) / aaq && (eX = bi.eX - 16 * aaq); bi.eX >= eX && 2 !== aE.a18;) eX += aaq, adA();
-					be.aD9()
-				} adB()
-		}(), mn(), bi.dq && (bi.dq = !1, zA())
+		i.ec(), __fx.replay.frame() ? mg() : bF.a9n() < 1.7 ? 0 === eG ? bi.eX >= eX && (aaq = bi.aCZ / bF.a9n(), eX += aaq * Math.floor(1 + (bi.eX - eX) / aaq), 2 === aE.a18 || aN.hJ || !bF.a5z ? mg() : (adA(), be.aD9()), eG++) : adB() :
+			function() {
+				var aaq;
+				if (bi.eX >= eX)
+					if (2 === aE.a18 || aN.hJ || !bF.a5z) mg(), eX = bi.eX;
+					else {
+						for (aaq = bi.aCZ / bF.a9n(), 16 < (bi.eX - eX) / aaq && (eX = bi.eX - 16 * aaq); bi.eX >= eX && 2 !== aE.a18;) eX += aaq, adA();
+						be.aD9()
+					} adB()
+			}(), mn(), bi.dq && (bi.dq = !1, zA())
 	}, this.a1J = function() {
 		bC.qM.aWz.length - ad4 <= 2 || aO.a2T("Replay file larger than expected.")
 	}
