@@ -4728,15 +4728,19 @@ function cP() {
 		if (__fx.leaderboardFilter.showingRivals) gi = 1;
 
 		if (__fx.leaderboardFilter.showingRivals) {
+			let rivalsCount = __fx.leaderboardFilter.rivalsData.length;
+			if (position !== 0 && position >= rivalsCount - aBF)
+				position = (rivalsCount > aBF ? rivalsCount : aBF) - aBF;
 			var rivalsRestore = [];
 			try {
 				for (var rivalsRow = 0; rivalsRow < aBF; rivalsRow++) {
 					var rivalsEntry = __fx.leaderboardFilter.rivalsData[rivalsRow + position];
 					if (rivalsEntry === undefined) break;
 					var repId = rivalsEntry.representativeId;
-					rivalsRestore.push([repId, ah.gx[repId], ah.zb[repId]]);
+					rivalsRestore.push([repId, ah.gx[repId], ah.zb[repId], ah.a4W[repId]]);
 					ah.gx[repId] = rivalsEntry.territory;
 					ah.zb[repId] = "[" + rivalsEntry.clan + "]";
+					ah.a4W[repId] = 0;
 				}
 				for (aBH.font = aBE, bD.r2.textAlign(aBH, 0), fS = aBF - gi; 0 <= fS; fS--) {
 					const rivalsEntryLeft = __fx.leaderboardFilter.rivalsData[fS + position];
@@ -4752,6 +4756,7 @@ function cP() {
 				rivalsRestore.forEach(function(entry) {
 					ah.gx[entry[0]] = entry[1];
 					ah.zb[entry[0]] = entry[2];
+					ah.a4W[entry[0]] = entry[3];
 				});
 			}
 		} else if (__fx.leaderboardFilter.enabled) {
