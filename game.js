@@ -2475,27 +2475,28 @@ function zd() {
 		for (aC = 0; aC < ak.sI.zv; aC++) zm.push(ak.sI.zw + aC);
 		var zx = ak.sI.zy(bN.zx);
 		for (aC = 0; aC < zx.length; aC++) zm.push(zx[aC]);
-		! function() {
-			var aC, h = bm.eU.data[120].value.split(",");
-			if (18 !== h.length)
-				for (aC = 0; aC < 9; aC++) zk[aC] = {
-					pl: 1015 + aC,
-					kZ: 0
-				};
-			else
-				for (aC = 0; aC < 9; aC++) {
-					var fb = parseInt(h[aC]),
-						eh = (fb = 0 <= fb && fb < ak.sI.zu ? fb : 0, parseInt(h[aC + 9]));
-					eh = 0 <= eh && eh < 1e3 ? eh : 0, zk[aC] = {
-						pl: fb,
-						kZ: eh
+		__fx.emojiBar.grid = zm,
+			function() {
+				var aC, h = bm.eU.data[120].value.split(",");
+				if (18 !== h.length)
+					for (aC = 0; aC < 9; aC++) zk[aC] = {
+						pl: 1015 + aC,
+						kZ: 0
+					};
+				else
+					for (aC = 0; aC < 9; aC++) {
+						var fb = parseInt(h[aC]),
+							eh = (fb = 0 <= fb && fb < ak.sI.zu ? fb : 0, parseInt(h[aC + 9]));
+						eh = 0 <= eh && eh < 1e3 ? eh : 0, zk[aC] = {
+							pl: fb,
+							kZ: eh
+						}
 					}
-				}
-		}()
+			}()
 	}, this.show = function(lj, lk, a03) {
 		var aC;
 		if (zn = lj, zo = lk, zj = a03 || 0, this.hv = !0, zl = [], 0 === zj)
-			for (aC = 0; aC < 9; aC++) zl.push(zk[aC].pl);
+			for (aC = 0; aC < 9; aC++) zl.push(__fx.emojiBar.slot(aC, zk[aC].pl));
 		else {
 			var fT = 49 * zj,
 				a03 = fT - 49;
@@ -2512,7 +2513,7 @@ function zd() {
 			if ((lj += 10 * bO.iH(bO.fa(lk - nW + .5 * gap, ze), 0, 9)) >= zl.length) return aM.sJ(), !0;
 			lk = zl[lj];
 			if (1024 === lk) return this.show(zn, zo, zj + 1), !0;
-			! function(pl) {
+			__fx.emojiBar.isCustom() || function(pl) {
 				for (var aC = 0; aC < 9; aC++) zk[aC].kZ = Math.floor(.99 * zk[aC].kZ);
 				for (aC = 0; aC < 9; aC++)
 					if (pl === zk[aC].pl) return zk[aC].kZ = Math.min(zk[aC].kZ + 30, 999), a02();
