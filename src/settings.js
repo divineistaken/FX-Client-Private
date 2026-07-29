@@ -32,6 +32,11 @@ var settings = {
   showReplayTimebar: true,
   customEmojiBar: false,
   emojiBar: []
+    customEmojiBar: false,
+  emojiBar: [],
+  optimizedSettings: true,
+  showBoatPaths: true
+};
 };
 __fx.settings = settings;
 const discontinuedSettings = ["hideAllLinks", "fontName"];
