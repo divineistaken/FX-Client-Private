@@ -31,8 +31,6 @@ var settings = {
   hidePropagandaPopup: false,
   showReplayTimebar: true,
   customEmojiBar: false,
-  emojiBar: []
-    customEmojiBar: false,
   emojiBar: [],
   optimizedSettings: true,
   showBoatPaths: true
@@ -292,8 +290,6 @@ const settingsManager = new (function () {
       note: "Use a fixed set of favorite emojis for the first-click emoji bar instead of having the game constantly reorder it by usage. Choose the emojis below.",
     },
     EmojiBarEditor,
-    ReplayHistoryList,
-        EmojiBarEditor,
     ReplayHistoryList,
     // --- NEW UI ELEMENTS ---
     {
