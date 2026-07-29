@@ -293,6 +293,22 @@ const settingsManager = new (function () {
     },
     EmojiBarEditor,
     ReplayHistoryList,
+        EmojiBarEditor,
+    ReplayHistoryList,
+    // --- NEW UI ELEMENTS ---
+    {
+      for: "optimizedSettings",
+      type: "checkbox",
+      label: "Optimized Settings",
+      note: "Forces best settings: Very High resolution, Fast text rendering, Small font size. Uncheck to use Territorial.io defaults.",
+    },
+    {
+      for: "showBoatPaths",
+      type: "checkbox",
+      label: "Show Boat Paths",
+      note: "Draws lines showing boat routes. Green = Your boats, Red = Enemy boats, White = Others.",
+    },
+    function Footer(container) {
     function Footer(container) {
       const versionInfo = document.createElement("p");
       versionInfo.innerText = `FX Client v${versionData.version}`;
