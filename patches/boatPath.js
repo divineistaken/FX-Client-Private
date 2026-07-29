@@ -67,38 +67,43 @@ class BoatPathTracker {
   }
 }
 
-// Put it on the window object so settings.js can find it
-const boatPathTracker = new BoatPathTracker();
-window.boatPathTracker = boatPathTracker;
+// --- BROWSER-SAFE EXECUTION ---
+// Only run this in the browser, NOT during the Node.js build process
+if (typeof window !== 'undefined') {
+  const boatPathTracker = new BoatPathTracker();
+  window.boatPathTracker = boatPathTracker;
 
-// Self-executing function to hook into the game safely
-function applyBoatPathHooks() {
-  if (window.Game && window.Game.prototype) {
-    // 1. Hook Update
-    const originalUpdate = window.Game.prototype.update;
-    window.Game.prototype.update = function(...args) {
-      originalUpdate.apply(this, args);
-      if (this.boats) boatPathTracker.update(this.boats);
-      if (!boatPathTracker.playerId && this.playerId) boatPathTracker.setPlayerId(this.playerId);
-    };
-
-    // 2. Hook Render
-    const originalRender = window.Game.prototype.render;
-    window.Game.prototype.render = function(ctx, ...args) {
-      originalRender.apply(this, [ctx, ...args]);
-      if (boatPathTracker.enabled) boatPathTracker.render(ctx);
-    };
-
-    // 3. Clear on Game Start/Reset
-    const originalStart = window.Game.prototype.startGame || window.Game.prototype.reset;
-    if (originalStart) {
-      window.Game.prototype.startGame = function(...args) {
-        boatPathTracker.clearPaths();
-        return originalStart.apply(this, args);
+  function applyBoatPathHooks() {
+    if (window.Game && window.Game.prototype) {
+      // 1. Hook Update
+      const originalUpdate = window.Game.prototype.update;
+      window.Game.prototype.update = function(...args) {
+        originalUpdate.apply(this, args);
+        if (this.boats) boatPathTracker.update(this.boats);
+        if (!boatPathTracker.playerId && this.playerId) boatPathTracker.setPlayerId(this.playerId);
       };
+
+      // 2. Hook Render
+      const originalRender = window.Game.prototype.render;
+      window.Game.prototype.render = function(ctx, ...args) {
+        originalRender.apply(this, [ctx, ...args]);
+        if (boatPathTracker.enabled) boatPathTracker.render(ctx);
+      };
+
+      // 3. Clear on Game Start/Reset
+      const originalStart = window.Game.prototype.startGame || window.Game.prototype.reset;
+      if (originalStart) {
+        window.Game.prototype.startGame = function(...args) {
+          boatPathTracker.clearPaths();
+          return originalStart.apply(this, args);
+        };
+      }
+    } else {
+      // If Game isn't loaded yet, try again in 100ms
+      setTimeout(applyBoatPathHooks, 100);
     }
-  } else {
-    setTimeout(applyBoatPathHooks, 100); // Wait for game to load
   }
+  
+  // Initialize the hooks
+  applyBoatPathHooks();
 }
-applyBoatPathHooks();
