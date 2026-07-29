@@ -6,6 +6,7 @@ import { displayChangelog } from './changelog.js';
 import replayHistory from './replayHistory.js'
 import emojiBar from "./emojiBar.js";
 import { initQuickToggles } from './quickToggles.js';
+import './boatPathTracker.js';
 
 window.__fx = window.__fx || {};
 const __fx = window.__fx;
