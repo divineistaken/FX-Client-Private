@@ -444,14 +444,37 @@ const settingsManager = new (function () {
     window.location.reload();
   };
   this.applySettings = function () {
-    if (settings.customBackgroundUrl !== "") {
-      document.body.style.backgroundImage =
-        "url(" + settings.customBackgroundUrl + ")";
-      document.body.style.backgroundSize = "cover";
-      document.body.style.backgroundPosition = "center";
+  if (settings.customBackgroundUrl !== "") {
+    document.body.style.backgroundImage =
+      "url(" + settings.customBackgroundUrl + ")";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+  }
+  __fx.makeMainMenuTransparent = settings.customBackgroundUrl !== "";
+  
+  this.applyCustomFeatures();
+};
+
+// NEW FUNCTION: Applies our custom features to the game
+this.applyCustomFeatures = function () {
+  // Feature 1: Optimized Settings
+  if (window.game && window.game.gfx) {
+    if (settings.optimizedSettings) {
+      window.game.gfx.resolution = 3;        // Very High
+      window.game.gfx.textRenderingSpeed = 2; // Fast
+      window.game.gfx.minimalFontSize = 1;    // Small
+    } else {
+      window.game.gfx.resolution = 1;        // Medium
+      window.game.gfx.textRenderingSpeed = 1; // Normal
+      window.game.gfx.minimalFontSize = 2;    // Medium
     }
-    __fx.makeMainMenuTransparent = settings.customBackgroundUrl !== "";
-  };
+  }
+
+  // Feature 2: Boat Paths
+  if (window.boatPathTracker) {
+    window.boatPathTracker.setEnabled(settings.showBoatPaths);
+  }
+};
 
   if (settings.useFullscreenMode) tryEnterFullscreen();
 })();
@@ -497,6 +520,56 @@ if (localStorage.getItem("fx_settings") !== null) {
   };
 }
 settingsManager.applySettings();
+
+// --- TOAST NOTIFICATION SYSTEM ---
+function showToast(message) {
+  let toast = document.getElementById('fx-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'fx-toast';
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.background = 'rgba(0, 0, 0, 0.8)';
+    toast.style.color = '#fff';
+    toast.style.padding = '10px 20px';
+    toast.style.borderRadius = '5px';
+    toast.style.zIndex = '10000';
+    toast.style.fontSize = '14px';
+    toast.style.fontFamily = 'sans-serif';
+    toast.style.pointerEvents = 'none';
+    toast.style.transition = 'opacity 0.3s';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  clearTimeout(toast.timeoutId);
+  toast.timeoutId = setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+}
+
+// --- KEYBOARD SHORTCUTS ---
+document.addEventListener('keydown', function(event) {
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+  // Shift + O: Toggle Optimized Settings
+  if (event.shiftKey && event.key.toLowerCase() === 'o') {
+    settings.optimizedSettings = !settings.optimizedSettings;
+    settingsManager.applySettings();
+    localStorage.setItem("fx_settings", JSON.stringify(settings));
+    showToast(`Optimized Settings: ${settings.optimizedSettings ? 'ON' : 'OFF'}`);
+    if (window.updateQuickToggleUI) window.updateQuickToggleUI();
+  }
+
+  // Shift + B: Toggle Boat Paths
+  if (event.shiftKey && event.key.toLowerCase() === 'b') {
+    settings.showBoatPaths = !settings.showBoatPaths;
+    settingsManager.applySettings();
+    localStorage.setItem("fx_settings", JSON.stringify(settings));
+    showToast(`Boat Paths: ${settings.showBoatPaths ? 'ON' : 'OFF'}`);
+    if (window.updateQuickToggleUI) window.updateQuickToggleUI();
+  }
+});
 
 export default settingsManager;
 export function getSettings() {
