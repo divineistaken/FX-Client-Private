@@ -37,7 +37,6 @@ var settings = {
   optimizedSettings: true,
   showBoatPaths: true
 };
-};
 __fx.settings = settings;
 const discontinuedSettings = ["hideAllLinks", "fontName"];
 __fx.makeMainMenuTransparent = false;
