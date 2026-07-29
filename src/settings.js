@@ -5,6 +5,7 @@ import versionData from '../version.json';
 import { displayChangelog } from './changelog.js';
 import replayHistory from './replayHistory.js'
 import emojiBar from "./emojiBar.js";
+import { initQuickToggles } from './quickToggles.js';
 
 window.__fx = window.__fx || {};
 const __fx = window.__fx;
