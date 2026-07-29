@@ -6,7 +6,6 @@ import { displayChangelog } from './changelog.js';
 import replayHistory from './replayHistory.js'
 import emojiBar from "./emojiBar.js";
 import { initQuickToggles } from './quickToggles.js';
-import './boatPathTracker.js';
 
 window.__fx = window.__fx || {};
 const __fx = window.__fx;
@@ -34,6 +33,7 @@ var settings = {
   showReplayTimebar: true,
   customEmojiBar: false,
   emojiBar: [],
+  // NEW SETTINGS
   optimizedSettings: true,
   showBoatPaths: true
 };
@@ -292,7 +292,7 @@ const settingsManager = new (function () {
     },
     EmojiBarEditor,
     ReplayHistoryList,
-    // --- NEW UI ELEMENTS ---
+    // --- NEW UI TOGGLES ---
     {
       for: "optimizedSettings",
       type: "checkbox",
@@ -305,7 +305,6 @@ const settingsManager = new (function () {
       label: "Show Boat Paths",
       note: "Draws lines showing boat routes. Green = Your boats, Red = Enemy boats, White = Others.",
     },
-    function Footer(container) {
     function Footer(container) {
       const versionInfo = document.createElement("p");
       versionInfo.innerText = `FX Client v${versionData.version}`;
@@ -445,37 +444,38 @@ const settingsManager = new (function () {
     window.location.reload();
   };
   this.applySettings = function () {
-  if (settings.customBackgroundUrl !== "") {
-    document.body.style.backgroundImage =
-      "url(" + settings.customBackgroundUrl + ")";
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-  }
-  __fx.makeMainMenuTransparent = settings.customBackgroundUrl !== "";
-  
-  this.applyCustomFeatures();
-};
-
-// NEW FUNCTION: Applies our custom features to the game
-this.applyCustomFeatures = function () {
-  // Feature 1: Optimized Settings
-  if (window.game && window.game.gfx) {
-    if (settings.optimizedSettings) {
-      window.game.gfx.resolution = 3;        // Very High
-      window.game.gfx.textRenderingSpeed = 2; // Fast
-      window.game.gfx.minimalFontSize = 1;    // Small
-    } else {
-      window.game.gfx.resolution = 1;        // Medium
-      window.game.gfx.textRenderingSpeed = 1; // Normal
-      window.game.gfx.minimalFontSize = 2;    // Medium
+    if (settings.customBackgroundUrl !== "") {
+      document.body.style.backgroundImage =
+        "url(" + settings.customBackgroundUrl + ")";
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundPosition = "center";
     }
-  }
+    __fx.makeMainMenuTransparent = settings.customBackgroundUrl !== "";
+    
+    this.applyCustomFeatures();
+  };
 
-  // Feature 2: Boat Paths
-  if (window.boatPathTracker) {
-    window.boatPathTracker.setEnabled(settings.showBoatPaths);
-  }
-};
+  // --- NEW FUNCTION FOR FEATURE 1 & 2 ---
+  this.applyCustomFeatures = function () {
+    // Feature 1: Optimized Settings
+    if (window.game && window.game.gfx) {
+      if (settings.optimizedSettings) {
+        window.game.gfx.resolution = 3;        // 3 = Very High
+        window.game.gfx.textRenderingSpeed = 2; // 2 = Fast
+        window.game.gfx.minimalFontSize = 1;    // 1 = Small
+      } else {
+        // Territorial.io Defaults
+        window.game.gfx.resolution = 1;        // 1 = Medium
+        window.game.gfx.textRenderingSpeed = 1; // 1 = Normal
+        window.game.gfx.minimalFontSize = 2;    // 2 = Medium
+      }
+    }
+
+    // Feature 2: Boat Paths
+    if (window.boatPathTracker) {
+      window.boatPathTracker.setEnabled(settings.showBoatPaths);
+    }
+  };
 
   if (settings.useFullscreenMode) tryEnterFullscreen();
 })();
@@ -549,7 +549,7 @@ function showToast(message) {
   toast.timeoutId = setTimeout(() => { toast.style.opacity = '0'; }, 1500);
 }
 
-// --- KEYBOARD SHORTCUTS ---
+// --- KEYBOARD SHORTCUTS (Desktop) ---
 document.addEventListener('keydown', function(event) {
   if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
 
@@ -571,6 +571,13 @@ document.addEventListener('keydown', function(event) {
     if (window.updateQuickToggleUI) window.updateQuickToggleUI();
   }
 });
+
+// --- INITIALIZE MOBILE UI ---
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initQuickToggles);
+} else {
+  initQuickToggles();
+}
 
 export default settingsManager;
 export function getSettings() {
