@@ -23,9 +23,12 @@ jobs:
       - name: Build FX Client
         run: npm run build
 
-      # Makes the root URL load the game automatically
       - name: Create Index Redirect
         run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
+
+      # NEW STEP: Delete node_modules so Wrangler doesn't try to upload it
+      - name: Clean up node_modules
+        run: rm -rf node_modules
 
       - name: Deploy to Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
