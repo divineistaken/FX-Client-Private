@@ -16,6 +16,7 @@ import { reportError } from './debugging.js';
 import replayHistory from './replayHistory.js';
 import replay from './replay.js';
 import emojiBar from './emojiBar.js';
+import boatPathTracker from './boatPathTracker.js';
 
 window.__fx = window.__fx || {};
 const __fx = window.__fx;
