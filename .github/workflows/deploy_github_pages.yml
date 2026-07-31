@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
@@ -23,8 +23,13 @@ jobs:
       - name: Build FX Client
         run: npm run build
 
-      - name: Create Index Redirect
-        run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
+      - name: Prepare Assets Directory
+        run: |
+          mkdir dist
+          cp latest.html dist/
+          cp latest.js dist/
+          cp -r build dist/
+          echo '<meta http-equiv="refresh" content="0; url=latest.html">' > dist/index.html
 
       - name: Deploy to Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
