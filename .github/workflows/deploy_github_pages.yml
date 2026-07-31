@@ -1,32 +1,35 @@
-name: Build and Publish to GitHub Pages
+name: Deploy to Cloudflare Worker
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Install Dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build Project
-      run: npm run build
+      - name: Build FX Client
+        run: npm run build
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
+      - name: Create Index Redirect
+        run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
+
+      - name: Deploy to Cloudflare Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: deploy --assets . --name FX-Client-Test --compatibility-date 2024-09-01
