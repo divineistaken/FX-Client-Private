@@ -26,9 +26,13 @@ jobs:
       - name: Create Index Redirect
         run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
 
-      # NEW STEP: Delete node_modules so Wrangler doesn't try to upload it
-      - name: Clean up node_modules
-        run: rm -rf node_modules
+      # NEW STEP: Delete Node files so Cloudflare serves only static files
+      - name: Clean up Node files
+        run: |
+          rm -rf node_modules
+          rm -f package.json
+          rm -f package-lock.json
+          rm -f index.js
 
       - name: Deploy to Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
