@@ -98,3 +98,5 @@ function applyBoatPathHooks() {
 }
 
 applyBoatPathHooks();
+
+export default boatPathTracker;
