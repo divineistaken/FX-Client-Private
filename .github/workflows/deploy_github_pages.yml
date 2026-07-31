@@ -1,35 +1,7 @@
-name: Deploy to Cloudflare Worker
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build FX Client
-        run: npm run build
-
-      - name: Create Index Redirect
-        run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
-
-      - name: Deploy to Cloudflare Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          command: deploy --assets . --name fx-client-test --compatibility-date 2024-09-01
+   - name: Deploy to Cloudflare Worker
+     uses: cloudflare/wrangler-action@v3
+     with:
+       apiToken: ${{ secrets.CF_API_TOKEN }}
+       accountId: ${{ secrets.CF_ACCOUNT_ID }}
+       wranglerVersion: 'latest'
+       command: deploy
