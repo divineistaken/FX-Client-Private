@@ -32,4 +32,4 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          command: deploy --assets . --name FX-Client-Test --compatibility-date 2024-09-01
+          command: deploy --assets . --name fx-client-test --compatibility-date 2024-09-01
