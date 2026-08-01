@@ -23,16 +23,13 @@ jobs:
       - name: Build FX Client
         run: npm run build
 
-      - name: Create Index Redirect
-        run: echo '<meta http-equiv="refresh" content="0; url=latest.html">' > index.html
-
-      # NEW STEP: Delete Node files so Cloudflare serves only static files
-      - name: Clean up Node files
+      - name: Prepare Dist Folder
         run: |
-          rm -rf node_modules
-          rm -f package.json
-          rm -f package-lock.json
-          rm -f index.js
+          mkdir dist
+          cp latest.html dist/
+          cp latest.js dist/
+          cp -r build dist/
+          echo '<meta http-equiv="refresh" content="0; url=latest.html">' > dist/index.html
 
       - name: Deploy to Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
