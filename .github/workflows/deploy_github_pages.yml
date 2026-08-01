@@ -10,7 +10,7 @@ jobs:
           node-version: '22'
       - run: npm install
       - run: npm run build
-      - run: mkdir dist && cp latest.html dist/ && cp latest.js dist/ && cp -r build dist/ && echo '<meta http-equiv="refresh" content="0; url=latest.html">' > dist/index.html
+      - run: node prepare-dist.js
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
