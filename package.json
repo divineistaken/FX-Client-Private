@@ -2,7 +2,6 @@
   "name": "fxclient",
   "version": "0.5.3",
   "description": "A modded territorial.io client",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "node index.js",
