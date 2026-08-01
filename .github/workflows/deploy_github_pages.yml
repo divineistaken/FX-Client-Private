@@ -1,40 +1,18 @@
-name: Deploy to Cloudflare Worker
-
-on:
-  push:
-    branches:
-      - main
-
+name: Deploy
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build FX Client
-        run: npm run build
-
-      - name: Prepare Dist Folder
-        run: |
-          mkdir dist
-          cp latest.html dist/
-          cp latest.js dist/
-          cp -r build dist/
-          echo '<meta http-equiv="refresh" content="0; url=latest.html">' > dist/index.html
-
-      - name: Deploy to Cloudflare Worker
-        uses: cloudflare/wrangler-action@v3
+      - run: npm install
+      - run: npm run build
+      - run: mkdir dist && cp latest.html dist/ && cp latest.js dist/ && cp -r build dist/ && echo '<meta http-equiv="refresh" content="0; url=latest.html">' > dist/index.html
+      - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          wranglerVersion: 'latest'
           command: deploy
