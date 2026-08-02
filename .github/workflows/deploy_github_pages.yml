@@ -11,8 +11,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: node prepare-dist.js
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=fx-client-test
+      - run: npx wrangler@latest pages deploy dist --project-name=fx-client-test
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
